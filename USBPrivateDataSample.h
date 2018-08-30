@@ -98,15 +98,16 @@ public:
         }
 
         io_name_t device_name = "unkown device";
-        device_id = IOIteratorNext(io_device_iterator); // getting first device
 
+        device_id = IOIteratorNext(io_device_iterator);
         while (device_id) {
 
-            device_id = IOIteratorNext(io_device_iterator); //set id type: io_service_t
-            IORegistryEntryGetName(device_id, device_name); //set name type: io_name_t
-
+            //set name
+            IORegistryEntryGetName(device_id, device_name);
             //add device
             this->list.emplace_back(device_id, device_name);
+            //next id
+            device_id = IOIteratorNext(io_device_iterator);
         }
 
         //Done, release the iterator
