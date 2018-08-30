@@ -106,7 +106,7 @@ public:
             device_id = IOIteratorNext(io_device_iterator); //set id type: io_service_t
             IORegistryEntryGetName(device_id, device_name); //set name type: io_name_t
 
-            this->list_ptr.get()->push_back(Device(device_id, device_name));
+            this->list.push_back(Device(device_id, device_name));
         }
 
         //Done, release the iterator
@@ -115,7 +115,7 @@ public:
 
     void printDeviceIDs(){
 
-        for (auto const& device : *this->list_ptr.get()) {
+        for (auto const& device : this->list) {
             std::cout << "#" << device.getId() <<  std::endl;
             std::cout << "| name: " << "\t" << device.getName() <<  std::endl;
             std::cout << "#-----------------------------------------------#" << std::endl;
@@ -126,9 +126,9 @@ public:
 int main(int argc, const char *argv[])
 {
     DevicesManager devices;
-    //devices.printDeviceIDs();
-    //devices.getDevicesArray();
-    //devices.printDeviceIDs();
+    devices.printDeviceIDs();
+    devices.getDevicesArray();
+    devices.printDeviceIDs();
 }
 
 #endif //CPP_MULTIMOUSE_USBPRIVATEDATASAMPLE_H
