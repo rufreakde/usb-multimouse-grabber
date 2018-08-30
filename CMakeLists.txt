@@ -9,6 +9,7 @@ find_package_handle_standard_args(IOKit DEFAULT_MSG IOKIT_LIBRARY)
 # CXX WARNING FLAGS
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}\
         -v")
+set(CMAKE_CXX_STANDARD 14)
 
 
 #source files of solution
