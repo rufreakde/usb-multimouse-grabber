@@ -6,7 +6,6 @@
 #define CPP_MULTIMOUSE_USBPRIVATEDATASAMPLE_H
 
 #include <CoreFoundation/CoreFoundation.h>
-
 #include <IOKit/IOKitLib.h>
 #include <IOKit/IOMessage.h>
 #include <IOKit/IOCFPlugIn.h>
@@ -19,32 +18,15 @@ class Device;
 class Device {
 
 public:
-    Device(){
-        std::cout << "###### Create Device - Empty" << std::endl;
 
-        this->x_previous = 0;
-        this->y_previous = 0;
-        this->x_current = 0;
-        this->y_current = 0;
-    }
-
-    Device( size_t _deviceID, std::string _device_name){
+    Device( size_t _deviceID, std::string _device_name) {
         std::cout << "###### Create Device - 0.0/0.0" << std::endl;
-
         this->device_id = std::make_shared<size_t>(_deviceID);
         this->device_name = std::make_shared<std::string>(_device_name);
-
-        this->x_previous = 0;
-        this->y_previous = 0;
-        this->x_current = 0;
-        this->y_current = 0;
     }
 
-    Device(size_t _deviceID, std::string _device_name, float _xStart, float _yStart){
+    Device(size_t _deviceID, std::string const& _device_name, float _xStart, float _yStart) : Device(_deviceID, _device_name){
         std::cout << "###### Create Device - " << _xStart << "/" << _yStart << std::endl;
-        this->device_id = std::make_shared<size_t>(_deviceID);
-        this->device_name = std::make_shared<std::string>(_device_name);
-
         this->x_previous = _xStart;
         this->y_previous = _yStart;
         this->x_current = _xStart;
@@ -73,32 +55,27 @@ private:
     std::shared_ptr<size_t> device_id;
     std::shared_ptr<std::string> device_name;
 
-    float x_previous;
-    float y_previous;
+    float x_previous = 0;
+    float y_previous = 0;
 
-    float x_current;
-    float y_current;
+    float x_current = 0;
+    float y_current = 0;
 
 };
 
-class Devices{
+class DevicesManager{
 
 public:
-    Devices(){
-        std::cout << "###### Created Empty Devices List" << std::endl;
-        this->list = std::unique_ptr<std::list<Device> >();
+    DevicesManager(){
+        std::cout << "###### Created Empty DevicesManager List" << std::endl;
+        this->list = std::list<Device>();
     }
 
-    explicit Devices(std::unique_ptr<std::list<Device> > _list){
-        std::cout << "###### Created Moved Devices List" << std::endl;
-        this->list = std::move(_list);
+    ~DevicesManager(){
+        std::cout << "###### Destroyed DevicesManager List" << std::endl;
     }
 
-    ~Devices(){
-        std::cout << "###### Destroyed Devices List" << std::endl;
-    }
-
-    std::unique_ptr<std::list<Device> > list;
+    std::list<Device> list;
 
     void getDevicesArray() {
 
@@ -129,7 +106,7 @@ public:
             device_id = IOIteratorNext(io_device_iterator); //set id type: io_service_t
             IORegistryEntryGetName(device_id, device_name); //set name type: io_name_t
 
-            this->list.get()->push_back(Device(device_id, device_name));
+            this->list_ptr.get()->push_back(Device(device_id, device_name));
         }
 
         //Done, release the iterator
@@ -138,7 +115,7 @@ public:
 
     void printDeviceIDs(){
 
-        for (auto const& device : *this->list.get()) {
+        for (auto const& device : *this->list_ptr.get()) {
             std::cout << "#" << device.getId() <<  std::endl;
             std::cout << "| name: " << "\t" << device.getName() <<  std::endl;
             std::cout << "#-----------------------------------------------#" << std::endl;
@@ -148,17 +125,17 @@ public:
 
 int main(int argc, const char *argv[])
 {
-    Devices devices;
-    devices.printDeviceIDs();
-    devices.getDevicesArray();
-    devices.printDeviceIDs();
+    DevicesManager devices;
+    //devices.printDeviceIDs();
+    //devices.getDevicesArray();
+    //devices.printDeviceIDs();
 }
 
 #endif //CPP_MULTIMOUSE_USBPRIVATEDATASAMPLE_H
 
 //================================================================================================
 //
-//  custom print device ID to list device id's
+//  custom print device ID to list_ptr device id's
 //
 //  This function will be called and just lists the USB Device idies connected to the MAC
 //  Remove this function later on
@@ -183,7 +160,7 @@ int main(int argc, const char *argv[])
         return;
     }
 
-    std::cout << "IO Devices found:" << std::endl;
+    std::cout << "IO DevicesManager found:" << std::endl;
     size_t device_number;
     io_name_t device_name;
 
