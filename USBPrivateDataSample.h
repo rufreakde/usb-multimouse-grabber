@@ -148,13 +148,10 @@ public:
 
 int main(int argc, const char *argv[])
 {
-    std::shared_ptr<Devices> devices;
-
-    devices->printDeviceIDs();
-    devices->getDevicesArray();
-    devices->printDeviceIDs();
-
-
+    Devices devices;
+    devices.printDeviceIDs();
+    devices.getDevicesArray();
+    devices.printDeviceIDs();
 }
 
 #endif //CPP_MULTIMOUSE_USBPRIVATEDATASAMPLE_H
