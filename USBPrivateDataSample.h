@@ -21,8 +21,8 @@ public:
 
     Device( size_t _deviceID, std::string _device_name) {
         std::cout << "###### Create Device - 0.0/0.0" << std::endl;
-        this->device_id = std::make_shared<size_t>(_deviceID);
-        this->device_name = std::make_shared<std::string>(_device_name);
+        this->device_id = _deviceID;
+        this->device_name = _device_name;
     }
 
     Device(size_t _deviceID, std::string const& _device_name, float _xStart, float _yStart) : Device(_deviceID, _device_name){
@@ -38,10 +38,10 @@ public:
     }
 
     const size_t getId () const{
-        return (size_t)this->device_id.get();
+        return this->device_id;
     };
     const std::string getName() const{
-        return "Not Implementet yet"; //this->device_name.get() does not work because of std::basic_string wtf?
+        return this->device_name; //this->device_name.get() does not work because of std::basic_string wtf?
     };
 
     const float getDeltaX() const{
@@ -52,8 +52,8 @@ public:
     };
 
 private:
-    std::shared_ptr<size_t> device_id;
-    std::shared_ptr<std::string> device_name;
+    size_t device_id;
+    std::string device_name;
 
     float x_previous = 0;
     float y_previous = 0;
@@ -106,7 +106,7 @@ public:
             device_id = IOIteratorNext(io_device_iterator); //set id type: io_service_t
             IORegistryEntryGetName(device_id, device_name); //set name type: io_name_t
 
-            this->list.push_back(Device(device_id, device_name));
+            this->list.emplace_back(device_id, device_name);
         }
 
         //Done, release the iterator
