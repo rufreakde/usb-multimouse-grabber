@@ -51,7 +51,7 @@ public:
         return this->device_id;
     };
     const std::string getName() const{
-        return this->device_name; //this->device_name.get() does not work because of std::basic_string wtf?
+        return this->device_name;
     };
 
     const float getDeltaX() const{
@@ -87,14 +87,14 @@ public:
         usb_dictionary = IOServiceMatching(kIOUSBDeviceClassName);
         if (usb_dictionary == NULL) {
             std::cout << "failed to fetch USB dictionary" << std::endl;
-            return; // still empty
+            return;
         }
 
-        // Now we have a dictionary, get an iterator.
+        // now we have a dictionary, get an iterator.
         assembler_kernel_return_value = IOServiceGetMatchingServices(kIOMasterPortDefault, usb_dictionary, &io_device_iterator);
         if (assembler_kernel_return_value != KERN_SUCCESS) {
             std::cout << "failed to get a kern_return" << std::endl;
-            return; // still empty
+            return;
         }
 
         io_name_t device_name = "unkown device";
@@ -102,15 +102,15 @@ public:
         device_id = IOIteratorNext(io_device_iterator);
         while (device_id) {
 
-            //set name
+            // set name
             IORegistryEntryGetName(device_id, device_name);
-            //add device
+            // add device
             this->list.emplace_back(device_id, device_name);
-            //next id
+            // next id
             device_id = IOIteratorNext(io_device_iterator);
         }
 
-        //Done, release the iterator
+        // release the iterator
         IOObjectRelease(io_device_iterator);
     }
 
@@ -133,55 +133,3 @@ int main(int argc, const char *argv[])
 }
 
 #endif //CPP_MULTIMOUSE_USBPRIVATEDATASAMPLE_H
-
-//================================================================================================
-//
-//  custom print device ID to list_ptr device id's
-//
-//  This function will be called and just lists the USB Device idies connected to the MAC
-//  Remove this function later on
-//
-//================================================================================================
-/*void printDeviceIDs() {
-    CFMutableDictionaryRef usb_dictionary;
-    io_iterator_t io_device_iterator;
-    kern_return_t assembler_kernel_return_value;
-    io_service_t device_id;
-
-    // set up a matching dictionary for the class
-    usb_dictionary = IOServiceMatching(kIOUSBDeviceClassName);
-    if (usb_dictionary == NULL) {
-        std::cout << "**Failed to retreave a USB dictionary!**" << std::endl;
-        return;
-    }
-
-    assembler_kernel_return_value = IOServiceGetMatchingServices(kIOMasterPortDefault, usb_dictionary, &io_device_iterator);
-    if (assembler_kernel_return_value != KERN_SUCCESS) {
-        std::cout << "failed to get a kern_return" << std::endl;
-        return;
-    }
-
-    std::cout << "IO DevicesManager found:" << std::endl;
-    size_t device_number;
-    io_name_t device_name;
-
-    while (device_id = IOIteratorNext(io_device_iterator)) {
-        // do something with device_id, eg. check properties
-        // And free the reference taken before continuing to the next item
-
-        IORegistryEntryGetName(device_id, device_name);
-
-        std::cout << "#" << device_number <<  std::endl;
-        std::cout << "| io id: "<< "\t" << device_id <<  std::endl;
-        std::cout << "| name: " << "\t" << device_name <<  std::endl;
-        std::cout << "#-----------------------------------------------#" << std::endl;
-
-        device_number++;
-        IOObjectRelease(device_id);
-    }
-
-    //Done, release the iterator
-    IOObjectRelease(io_device_iterator);
-}*/
-
-
