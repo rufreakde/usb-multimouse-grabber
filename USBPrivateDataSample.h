@@ -17,16 +17,26 @@ class Device;
 
 class Device {
 
+private:
+    size_t device_id;
+    std::string device_name;
+
+    float x_previous = 0;
+    float y_previous = 0;
+
+    float x_current = 0;
+    float y_current = 0;
+
 public:
 
     Device( size_t _deviceID, std::string _device_name) {
-        std::cout << "###### Create Device - 0.0/0.0" << std::endl;
+        //std::cout << "###### Create Device - 0.0/0.0" << std::endl;
         this->device_id = _deviceID;
         this->device_name = _device_name;
     }
 
     Device(size_t _deviceID, std::string const& _device_name, float _xStart, float _yStart) : Device(_deviceID, _device_name){
-        std::cout << "###### Create Device - " << _xStart << "/" << _yStart << std::endl;
+        //std::cout << "###### Create Device - " << _xStart << "/" << _yStart << std::endl;
         this->x_previous = _xStart;
         this->y_previous = _yStart;
         this->x_current = _xStart;
@@ -34,7 +44,7 @@ public:
     }
 
     ~Device(){
-        std::cout << "###### Destroyed Device" << std::endl;
+        //std::cout << "###### Destroyed Device" << std::endl;
     }
 
     const size_t getId () const{
@@ -50,32 +60,21 @@ public:
     const float getDeltaY() const{
         return y_previous - y_current;
     };
-
-private:
-    size_t device_id;
-    std::string device_name;
-
-    float x_previous = 0;
-    float y_previous = 0;
-
-    float x_current = 0;
-    float y_current = 0;
-
 };
 
 class DevicesManager{
 
+private:
+    std::list<Device> list = std::list<Device>();
+
 public:
     DevicesManager(){
-        std::cout << "###### Created Empty DevicesManager List" << std::endl;
-        this->list = std::list<Device>();
+        //std::cout << "###### Created Empty DevicesManager List" << std::endl;
     }
 
     ~DevicesManager(){
-        std::cout << "###### Destroyed DevicesManager List" << std::endl;
+        //std::cout << "###### Destroyed DevicesManager List" << std::endl;
     }
-
-    std::list<Device> list;
 
     void getDevicesArray() {
 
@@ -106,6 +105,7 @@ public:
             device_id = IOIteratorNext(io_device_iterator); //set id type: io_service_t
             IORegistryEntryGetName(device_id, device_name); //set name type: io_name_t
 
+            //add device
             this->list.emplace_back(device_id, device_name);
         }
 
@@ -126,9 +126,9 @@ public:
 int main(int argc, const char *argv[])
 {
     DevicesManager devices;
-    devices.printDeviceIDs();
     devices.getDevicesArray();
     devices.printDeviceIDs();
+
 }
 
 #endif //CPP_MULTIMOUSE_USBPRIVATEDATASAMPLE_H
